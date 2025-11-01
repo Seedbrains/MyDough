@@ -338,8 +338,8 @@ html {
 }
 
 .go-btn {
-  position: relative;       /* ensures it appears above overlapping layers */
-  z-index: 5;               /* higher than curve or hero image */
+  position: relative;      
+  z-index: 5;               
   background: var(--deep-pink);
   color: #fff;
   border: none;
@@ -350,11 +350,12 @@ html {
   box-shadow: 10px 10px 0 rgba(0,0,0,0.08);
   cursor: pointer;
   transition: transform .18s, box-shadow .18s;
-  display: inline-block;    /* prevents weird flex issues */
-  margin-top: 18px;         /* keeps some spacing from text */
+  display: inline-block;    
+  margin-top: 18px;        
 }
 
 .go-btn:hover {
   transform: translateY(-4px);
   box-shadow: 16px 16px 16px rgba(0,0,0,0.08);
 }
+
