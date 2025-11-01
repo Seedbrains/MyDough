@@ -47,81 +47,55 @@
       <div class="hero-divider"></div>
     </section>
 
-    <!-- TOP PICKS / SHOP -->
-    <section id="shop" class="shop container">
-      <h2 class="section-title">Our Top Picks for Today</h2>
+  <!-- TOP PICKS / SHOP -->
+<section id="shop" class="shop container">
+  <h2 class="section-title">Our Top Picks for Today</h2>
 
-      <div class="top-cards">
-        <div class="card small"></div>
-        <div class="card small"></div>
-        <div class="card small"></div>
+  <div class="top-cards">
+    <article class="product">
+      <div class="product-media">
+        <img src="assets/product1.jpeg" alt="Buttercream Dream">
       </div>
-
-      <div class="section-divider"></div>
-
-      <div class="product-grid">
-        <!-- 6 product cards -->
-        <article class="product" data-name="Buttercream Dream">
-          <div class="product-media">
-            <img src="assets/product1.jpg" alt="" onerror="this.style.backgroundColor='#ddd'; this.src='';">
-          </div>
-          <div class="product-meta">
-            <h3>Buttercream Dream</h3>
-            <p class="price">₱250</p>
-          </div>
-        </article>
-
-        <article class="product" data-name="Strawberry Swirl">
-          <div class="product-media">
-            <img src="assets/product2.jpg" alt="" onerror="this.style.backgroundColor='#ddd'; this.src='';">
-          </div>
-          <div class="product-meta">
-            <h3>Strawberry Swirl</h3>
-            <p class="price">₱280</p>
-          </div>
-        </article>
-
-        <article class="product" data-name="Choco Layers">
-          <div class="product-media">
-            <img src="assets/product3.jpg" alt="" onerror="this.style.backgroundColor='#ddd'; this.src='';">
-          </div>
-          <div class="product-meta">
-            <h3>Choco Layers</h3>
-            <p class="price">₱300</p>
-          </div>
-        </article>
-
-        <article class="product" data-name="Lemon Zest">
-          <div class="product-media">
-            <img src="assets/product4.jpg" alt="" onerror="this.style.backgroundColor='#ddd'; this.src='';">
-          </div>
-          <div class="product-meta">
-            <h3>Lemon Zest</h3>
-            <p class="price">₱240</p>
-          </div>
-        </article>
-
-        <article class="product" data-name="Matcha Joy">
-          <div class="product-media">
-            <img src="assets/product5.jpg" alt="" onerror="this.style.backgroundColor='#ddd'; this.src='';">
-          </div>
-          <div class="product-meta">
-            <h3>Matcha Joy</h3>
-            <p class="price">₱270</p>
-          </div>
-        </article>
-
-        <article class="product" data-name="Classic Vanilla">
-          <div class="product-media">
-            <img src="assets/product6.jpg" alt="" onerror="this.style.backgroundColor='#ddd'; this.src='';">
-          </div>
-          <div class="product-meta">
-            <h3>Classic Vanilla</h3>
-            <p class="price">₱220</p>
-          </div>
-        </article>
+      <div class="product-meta">
+        <h3>Buttercream Dream</h3>
+        <p class="price">₱250</p>
       </div>
-    </section>
+    </article>
+
+    <article class="product">
+      <div class="product-media">
+        <img src="assets/product2.jpeg" alt="Strawberry Swirl">
+      </div>
+      <div class="product-meta">
+        <h3>Strawberry Swirl</h3>
+        <p class="price">₱280</p>
+      </div>
+    </article>
+
+    <article class="product">
+      <div class="product-media">
+        <img src="assets/product3.jpeg" alt="Choco Layers">
+      </div>
+      <div class="product-meta">
+        <h3>Choco Layers</h3>
+        <p class="price">₱300</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- Product grid (auto-filled by JS) -->
+  <div class="product-grid" id="productGrid"></div>
+
+  <!-- Pagination buttons -->
+  <div class="pagination">
+    <button class="page-btn active" data-page="1">1</button>
+    <button class="page-btn" data-page="2">2</button>
+    <button class="page-btn" data-page="3">3</button>
+    <button class="page-btn" data-page="4">4</button>
+  </div>
+</section>
 
     <!-- ABOUT -->
     <section id="about" class="about container">
@@ -143,7 +117,7 @@
       </div>
     </section>
 
-    <!-- LOGIN (placeholder)
+    <!-- LOGIN (placeholder) 
     <section id="login" class="login container">
       <h2 class="section-title">Login</h2>
       <form class="login-form" onsubmit="return false;">
@@ -155,12 +129,8 @@
 -->
     <footer class="site-footer container">
       <p>© MyDough — Handcrafted Pastries</p>
-    </footer>
-    
+    </footer> 
   </main>
 
 </body>
 </html>
-
-
-
