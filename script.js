@@ -1,97 +1,136 @@
-/* ---------- Basic entrance animations with anime.js ---------- */
-/* NOTE: anime.js is loaded in index.html before this script.
-   We also trigger reveal animations when elements enter viewport. */
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MyDough — Homepage</title>
 
-document.addEventListener('DOMContentLoaded', () => {
-  // page load timeline
-  const tl = anime.timeline({ easing: 'easeOutCubic', duration: 700 });
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
 
-  tl
-  .add({
-    targets: '.brand',
-    translateY: [-18, 0],
-    opacity: [0, 1]
-  })
-  .add({
-    targets: '.main-nav a',
-    translateY: [-10, 0],
-    opacity: [0, 1],
-    delay: anime.stagger(100)
-  }, '-=500')
-  .add({
-    targets: '.hero-title',
-    translateX: [40, 0],
-    opacity: [0, 1]
-  }, '-=400')
-  .add({
-    targets: '.hero-sub',
-    translateY: [-10, 0],
-    opacity: [0, 1]
-  }, '-=350')
-  .add({
-    targets: '#cake',
-    translateY: [80, 0],
-    opacity: [0, 1],
-    duration: 900,
-    easing: 'easeOutElastic(1, .7)'
-  }, '-=450')
-  .add({
-    targets: '.go-btn',
-    scale: [0.8, 1],
-    opacity: [0, 1],
-    duration: 900,
-    easing: 'easeOutElastic(1, .75)'
-  }, '-=550');
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Anime.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
 
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">MYDOUGH</div>
+      <nav class="main-nav">
+        <a href="#home">Home</a>
+        <a href="#shop">Shop</a>
+        <a href="#about">About</a>
+        <a href="#login">Login</a>
+      </nav>
+    </div>
+  </header>
 
-  // Go button hover pulse
-  const goBtn = document.getElementById('goBtn');
-  goBtn.addEventListener('mouseenter', () => {
-    anime.remove(goBtn);
-    anime({
-      targets: goBtn,
-      scale: 1.04,
-      duration: 220,
-      easing: 'easeOutQuad'
-    });
-  });
-  goBtn.addEventListener('mouseleave', () => {
-    anime.remove(goBtn);
-    anime({
-      targets: goBtn,
-      scale: 1,
-      duration: 220,
-      easing: 'easeOutQuad'
-    });
-  });
+  <main>
+    <!-- HERO -->
+    <section id="home" class="hero">
+      <img src="assets/curve.png" alt="" class="curve" aria-hidden="true">
+      <div class="container hero-inner">
+        <div class="hero-left">
+          <img id="cake" src="assets/cake.png" alt="cake illustration">
+        </div>
 
-  // Smooth scroll for nav links
-  document.querySelectorAll('.main-nav a').forEach(a=>{
-    a.addEventListener('click', (e)=>{
-      e.preventDefault();
-      const id = a.getAttribute('href').replace('#','');
-      const el = document.getElementById(id);
-      if(!el) return;
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 12, behavior: 'smooth' });
-    });
-  });
+        <div class="hero-right">
+          <h1 class="hero-title">DOUGH<br>IT<br>YOURSELF</h1>
+          <p class="hero-sub">MAKE YOUR OWN PASTRY</p>
+          <button id="goBtn" class="go-btn">Go!</button>
+        </div>
+      </div>
 
-  // Intersection-based reveal: animate elements as they scroll into view
-  const revealTargets = document.querySelectorAll('.product, .about-inner, .section-title, .top-cards, .product-grid .product');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting){
-        anime({
-          targets: entry.target,
-          translateY: [18, 0],
-          opacity: [0, 1],
-          duration: 700,
-          easing: 'easeOutCubic'
-        });
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
+      <div class="hero-divider"></div>
+    </section>
 
-  revealTargets.forEach(t => io.observe(t));
-});
+  <!-- TOP PICKS / SHOP -->
+<section id="shop" class="shop container">
+  <h2 class="section-title">Our Top Picks for Today</h2>
+
+  <div class="top-cards">
+    <article class="product">
+      <div class="product-media">
+        <img src="assets/product1.jpeg" alt="Buttercream Dream">
+      </div>
+      <div class="product-meta">
+        <h3>Buttercream Dream</h3>
+        <p class="price">₱250</p>
+      </div>
+    </article>
+
+    <article class="product">
+      <div class="product-media">
+        <img src="assets/product2.jpeg" alt="Strawberry Swirl">
+      </div>
+      <div class="product-meta">
+        <h3>Strawberry Swirl</h3>
+        <p class="price">₱280</p>
+      </div>
+    </article>
+
+    <article class="product">
+      <div class="product-media">
+        <img src="assets/product3.jpeg" alt="Choco Layers">
+      </div>
+      <div class="product-meta">
+        <h3>Choco Layers</h3>
+        <p class="price">₱300</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- Product grid (auto-filled by JS) -->
+  <div class="product-grid" id="productGrid"></div>
+
+  <!-- Pagination buttons -->
+  <div class="pagination">
+    <button class="page-btn active" data-page="1">1</button>
+    <button class="page-btn" data-page="2">2</button>
+    <button class="page-btn" data-page="3">3</button>
+    <button class="page-btn" data-page="4">4</button>
+  </div>
+</section>
+
+    <!-- ABOUT -->
+    <section id="about" class="about container">
+      <h2 class="about-title">About Us</h2>
+      <div class="about-inner">
+        <div class="about-text">
+          <p>At MyDough, we believe every pastry tells a story. Our
+          small-batch cakes are handcrafted daily using locally-sourced
+          ingredients and a whole lot of love. From classic favorites
+          to playful seasonal flavors, we bake memories—one slice at a
+          time.</p>
+
+          <p>Visit our shop for custom orders. We love helping people create something sweet.</p>
+        </div>
+
+        <div class="about-media">
+          <img src="assets/product1.jpg" alt="about photo" onerror="this.style.backgroundColor='#ddd'; this.src='';">
+        </div>
+      </div>
+    </section>
+
+    <!-- LOGIN (placeholder) 
+    <section id="login" class="login container">
+      <h2 class="section-title">Login</h2>
+      <form class="login-form" onsubmit="return false;">
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <button class="submit">Sign in</button>
+      </form>
+    </section>
+-->
+    <footer class="site-footer container">
+      <p>© MyDough — Handcrafted Pastries</p>
+    </footer> 
+  </main>
+
+</body>
+</html>
