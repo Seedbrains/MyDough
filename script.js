@@ -46,33 +46,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Go button hover pulse
   const goBtn = document.getElementById('goBtn');
-  goBtn.addEventListener('mouseenter', () => {
-    anime.remove(goBtn);
-    anime({
-      targets: goBtn,
-      scale: 1.04,
-      duration: 220,
-      easing: 'easeOutQuad'
+  if (goBtn) {
+    goBtn.addEventListener('mouseenter', () => {
+      anime.remove(goBtn);
+      anime({
+        targets: goBtn,
+        scale: 1.04,
+        duration: 220,
+        easing: 'easeOutQuad'
+      });
     });
-  });
-  goBtn.addEventListener('mouseleave', () => {
-    anime.remove(goBtn);
-    anime({
-      targets: goBtn,
-      scale: 1,
-      duration: 220,
-      easing: 'easeOutQuad'
+    goBtn.addEventListener('mouseleave', () => {
+      anime.remove(goBtn);
+      anime({
+        targets: goBtn,
+        scale: 1,
+        duration: 220,
+        easing: 'easeOutQuad'
+      });
     });
-  });
+  }
 
-  // Smooth scroll for nav links
-  document.querySelectorAll('.main-nav a').forEach(a=>{
-    a.addEventListener('click', (e)=>{
+  // Smooth scroll for internal links only (those starting with #)
+  document.querySelectorAll('.main-nav a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
       e.preventDefault();
-      const id = a.getAttribute('href').replace('#','');
+      const id = a.getAttribute('href').substring(1);
       const el = document.getElementById(id);
-      if(!el) return;
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 12, behavior: 'smooth' });
+      if (!el) return;
+      window.scrollTo({
+        top: el.getBoundingClientRect().top + window.scrollY - 12,
+        behavior: 'smooth'
+      });
     });
   });
 
@@ -94,69 +99,104 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.12 });
 
   revealTargets.forEach(t => io.observe(t));
+
+  /* ---------- Page transition animation ---------- */
+  // Fade in on load
+  anime({
+    targets: 'body',
+    opacity: [0, 1],
+    duration: 600,
+    easing: 'easeOutQuad'
+  });
+
+  // Fade out when navigating to another page
+  document.querySelectorAll('a[href]').forEach(link => {
+    const url = link.getAttribute('href');
+    if (url && !url.startsWith('#') && !url.startsWith('http')) {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        anime({
+          targets: 'body',
+          opacity: [1, 0],
+          duration: 500,
+          easing: 'easeInQuad',
+          complete: () => {
+            window.location.href = url;
+          }
+        });
+      });
+    }
+  });
 });
 
 
+/* ---------- Product rendering ---------- */
 const products = [
-        [
-          { name: "Buttercream Dream", price: "₱250", img: "assets/product1.jpg" },
-          { name: "Strawberry Swirl", price: "₱280", img: "assets/product2.jpg" },
-          { name: "Choco Layers", price: "₱300", img: "assets/product3.jpg" },
-          { name: "Lemon Zest", price: "₱240", img: "assets/product4.jpg" },
-          { name: "Matcha Joy", price: "₱270", img: "assets/product5.jpg" },
-          { name: "Classic Vanilla", price: "₱220", img: "assets/product6.jpg" },
-        ],
-        [
-          { name: "Red Velvet Bliss", price: "₱290", img: "assets/product7.jpg" },
-          { name: "Caramel Crunch", price: "₱260", img: "assets/product8.jpg" },
-          { name: "Mint Chip Magic", price: "₱250", img: "assets/product9.jpg" },
-          { name: "Cookies n’ Cream", price: "₱280", img: "assets/product10.jpg" },
-          { name: "Dark Fudge", price: "₱310", img: "assets/product11.jpg" },
-          { name: "Hazelnut Heaven", price: "₱320", img: "assets/product12.jpg" },
-        ],
-        [
-          { name: "Mocha Mood", price: "₱250", img: "assets/product13.jpg" },
-          { name: "Blueberry Burst", price: "₱280", img: "assets/product14.jpg" },
-          { name: "Peanut Butter Pie", price: "₱270", img: "assets/product15.jpg" },
-          { name: "Raspberry Ripple", price: "₱290", img: "assets/product16.jpg" },
-          { name: "Honey Crunch", price: "₱260", img: "assets/product17.jpg" },
-          { name: "Velvet Choco Chip", price: "₱300", img: "assets/product18.jpg" },
-        ],
-        [
-          { name: "Tiramisu Touch", price: "₱340", img: "assets/product19.jpg" },
-          { name: "Banoffee Bliss", price: "₱300", img: "assets/product20.jpg" },
-          { name: "Berry Cheesecake", price: "₱330", img: "assets/product21.jpg" },
-          { name: "Salted Caramel Slice", price: "₱310", img: "assets/product22.jpg" },
-          { name: "Orange Cream Delight", price: "₱280", img: "assets/product23.jpg" },
-          { name: "Pistachio Paradise", price: "₱350", img: "assets/product24.jpg" },
-        ]
-      ];
+  [
+    { name: "Buttercream Dream", price: "₱250", img: "assets/product1.jpg" },
+    { name: "Strawberry Swirl", price: "₱280", img: "assets/product2.jpg" },
+    { name: "Choco Layers", price: "₱300", img: "assets/product3.jpg" },
+    { name: "Lemon Zest", price: "₱240", img: "assets/product4.jpg" },
+    { name: "Matcha Joy", price: "₱270", img: "assets/product5.jpg" },
+    { name: "Classic Vanilla", price: "₱220", img: "assets/product6.jpg" },
+  ],
+  [
+    { name: "Red Velvet Bliss", price: "₱290", img: "assets/product7.jpg" },
+    { name: "Caramel Crunch", price: "₱260", img: "assets/product8.jpg" },
+    { name: "Mint Chip Magic", price: "₱250", img: "assets/product9.jpg" },
+    { name: "Cookies n’ Cream", price: "₱280", img: "assets/product10.jpg" },
+    { name: "Dark Fudge", price: "₱310", img: "assets/product11.jpg" },
+    { name: "Hazelnut Heaven", price: "₱320", img: "assets/product12.jpg" },
+  ],
+  [
+    { name: "Mocha Mood", price: "₱250", img: "assets/product13.jpg" },
+    { name: "Blueberry Burst", price: "₱280", img: "assets/product14.jpg" },
+    { name: "Peanut Butter Pie", price: "₱270", img: "assets/product15.jpg" },
+    { name: "Raspberry Ripple", price: "₱290", img: "assets/product16.jpg" },
+    { name: "Honey Crunch", price: "₱260", img: "assets/product17.jpg" },
+    { name: "Velvet Choco Chip", price: "₱300", img: "assets/product18.jpg" },
+  ],
+  [
+    { name: "Tiramisu Touch", price: "₱340", img: "assets/product19.jpg" },
+    { name: "Banoffee Bliss", price: "₱300", img: "assets/product20.jpg" },
+    { name: "Berry Cheesecake", price: "₱330", img: "assets/product21.jpg" },
+    { name: "Salted Caramel Slice", price: "₱310", img: "assets/product22.jpg" },
+    { name: "Orange Cream Delight", price: "₱280", img: "assets/product23.jpg" },
+    { name: "Pistachio Paradise", price: "₱350", img: "assets/product24.jpg" },
+  ]
+];
 
-      const grid = document.getElementById('productGrid');
-      const buttons = document.querySelectorAll('.page-btn');
+const grid = document.getElementById('productGrid');
+const buttons = document.querySelectorAll('.page-btn');
 
-      function renderProducts(pageIndex) {
-        const items = products[pageIndex];
-        grid.innerHTML = items.map(p => `
-          <article class="product">
-            <div class="product-media">
-              <img src="${p.img}" alt="${p.name}" onerror="this.style.backgroundColor='#ddd'; this.src='';">
-            </div>
-            <div class="product-meta">
-              <h3>${p.name}</h3>
-              <p class="price">${p.price}</p>
-            </div>
-          </article>
-        `).join('');
-      }
+function renderProducts(pageIndex) {
+  const items = products[pageIndex];
+  grid.innerHTML = items.map((p, index) => `
+    <article class="product">
+      <a href="product.html?id=${pageIndex * 6 + index + 1}" class="product-link">
+        <div class="product-media">
+          <img src="${p.img}" alt="${p.name}" onerror="this.style.backgroundColor='#ddd'; this.src='';">
+        </div>
+        <div class="product-meta">
+          <h3>${p.name}</h3>
+          <p class="price">${p.price}</p>
+        </div>
+      </a>
+      <div class="product-buttons">
+        <button class="btn buy-now">Buy Now</button>
+        <button class="btn add-cart">Add to Cart</button>
+      </div>
+    </article>
+  `).join('');
+}
 
-      renderProducts(0);
+renderProducts(0);
 
-      buttons.forEach((btn, i) => {
-        btn.addEventListener('click', () => {
-          buttons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderProducts(i);
-        });
-      });
+buttons.forEach((btn, i) => {
+  btn.addEventListener('click', () => {
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProducts(i);
+  });
+});
 
