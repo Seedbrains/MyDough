@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyDough — Cart</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Anime.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fade in animation
+      anime({
+        targets: 'body',
+        opacity: [0, 1],
+        duration: 600,
+        easing: 'easeOutQuad'
+      });
+
+      // Fade out when navigating away
+      document.querySelectorAll('a[href]').forEach(link => {
+        const url = link.getAttribute('href');
+        if (url && !url.startsWith('#') && !url.startsWith('http')) {
+          link.addEventListener('click', e => {
+            e.preventDefault();
+            anime({
+              targets: 'body',
+              opacity: [1, 0],
+              duration: 500,
+              easing: 'easeInQuad',
+              complete: () => window.location.href = url
+            });
+          });
+        }
+      });
+
+      // Animate curve
+      anime({
+        targets: '.curve',
+        opacity: [0, 1],
+        translateY: [-30, 0],
+        duration: 800,
+        easing: 'easeOutCubic'
+      });
+    });
+  </script>
+
+  <style>
+    :root {
+      --pink: #f6b6c6;
+      --deep-pink: #f28fa3;
+      --cream: #fff6e6;
+      --muted: #6b5a5a;
+    }
+
+    /* Container resets */
+.container {
+  width: 92%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+    /* --- CART PAGE CONTENT --- */
+    .cart-section {
+      position: relative;
+      margin-top: 60px;
+      padding: 100px 20px 40px;
+      background: var(--cream);
+      text-align: center;
+      overflow: hidden;
+    }
+
+  
+
+    .cart-title {
+      font-family: 'Amatic SC', cursive;
+      font-size: 52px;
+      color: var(--deep-pink);
+      margin-bottom: 60px;
+    }
+
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      width: 80%;
+      max-width: 800px;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .cart-item img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #ddd;
+    }
+
+    .item-details {
+      flex: 1;
+      text-align: left;
+    }
+
+    .item-details h3 {
+      font-family: 'Amatic SC', cursive;
+      font-size: 26px;
+      margin-bottom: 6px;
+      color: var(--deep-pink);
+    }
+
+    .item-details p {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    /* ✅ Fixed footer checkout bar */
+    .checkout-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 28px;
+      z-index: 10;
+    }
+
+    .total-amount {
+      font-family: 'Amatic SC', cursive;
+      font-size: 26px;
+      color: var(--deep-pink);
+    }
+
+    .checkout-btn {
+      background: var(--pink);
+      border: none;
+      padding: 14px 36px;
+      border-radius: 6px;
+      font-family: 'Amatic SC', cursive;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .checkout-btn:hover {
+      background: var(--deep-pink);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">MYDOUGH</div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#shop">Shop</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#login">Login</a>
+        <a href="cart.html" class="cart-btn" aria-label="View Cart">View Cart</a>
+      </nav>
+    </div>
+  </header>
+<section class="hero hero-cart">
+  <img src="assets/curve.png" alt="" class="curve">
+</section>
+
+<main class="cart-section">
+  <h2 class="cart-title">Your Cart</h2>
+  <div class="cart-items">
+      <div class="cart-item">
+        <img src="assets/product1.jpeg" alt="">
+        <div class="item-details">
+          <h3>Buttercream Dream</h3>
+          <p>Qty: 1</p>
+          <p>₱250</p>
+        </div>
+      </div>
+
+      <div class="cart-item">
+        <img src="assets/product2.jpeg" alt="">
+        <div class="item-details">
+          <h3>Strawberry Swirl</h3>
+          <p>Qty: 2</p>
+          <p>₱560</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="checkout-footer">
+    <div class="total-amount">Total: ₱810</div>
+    <button class="checkout-btn">Check Out</button>
+  </footer>
+</body>
+</html>
