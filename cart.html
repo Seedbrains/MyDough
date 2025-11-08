@@ -11,6 +11,7 @@
 
   <!-- Anime.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+
   <script defer>
     document.addEventListener('DOMContentLoaded', () => {
       // Fade in animation
@@ -21,7 +22,7 @@
         easing: 'easeOutQuad'
       });
 
-      // Fade out when navigating away
+      // Fade out navigation animation
       document.querySelectorAll('a[href]').forEach(link => {
         const url = link.getAttribute('href');
         if (url && !url.startsWith('#') && !url.startsWith('http')) {
@@ -58,11 +59,11 @@
     }
 
     /* Container resets */
-.container {
-  width: 92%;
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
+    .container {
+      width: 92%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
 
     /* --- CART PAGE CONTENT --- */
     .cart-section {
@@ -73,8 +74,6 @@
       text-align: center;
       overflow: hidden;
     }
-
-  
 
     .cart-title {
       font-family: 'Amatic SC', cursive;
@@ -101,6 +100,7 @@
       max-width: 800px;
       padding: 20px;
       gap: 20px;
+      position: relative;
     }
 
     .cart-item img {
@@ -127,6 +127,24 @@
       font-size: 14px;
       color: var(--muted);
       margin-bottom: 4px;
+    }
+
+    /* Remove button */
+    .remove-btn {
+      background: none;
+      border: 2px solid var(--pink);
+      color: var(--deep-pink);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .remove-btn:hover {
+      background: var(--deep-pink);
+      color: white;
     }
 
     /* ✅ Fixed footer checkout bar */
@@ -166,6 +184,12 @@
       background: var(--deep-pink);
       transform: scale(1.05);
     }
+
+    .empty-cart {
+      font-size: 20px;
+      color: var(--muted);
+      margin-top: 40px;
+    }
   </style>
 </head>
 
@@ -182,36 +206,83 @@
       </nav>
     </div>
   </header>
-<section class="hero hero-cart">
-  <img src="assets/curve.png" alt="" class="curve">
-</section>
 
-<main class="cart-section">
-  <h2 class="cart-title">Your Cart</h2>
-  <div class="cart-items">
-      <div class="cart-item">
-        <img src="assets/product1.jpeg" alt="">
-        <div class="item-details">
-          <h3>Buttercream Dream</h3>
-          <p>Qty: 1</p>
-          <p>₱250</p>
-        </div>
-      </div>
+  <section class="hero hero-cart">
+    <img src="assets/curve.png" alt="" class="curve">
+  </section>
 
-      <div class="cart-item">
-        <img src="assets/product2.jpeg" alt="">
-        <div class="item-details">
-          <h3>Strawberry Swirl</h3>
-          <p>Qty: 2</p>
-          <p>₱560</p>
-        </div>
-      </div>
-    </div>
+  <main class="cart-section">
+    <h2 class="cart-title">Your Cart</h2>
+    <div class="cart-items" id="cartItems"></div>
   </main>
 
   <footer class="checkout-footer">
-    <div class="total-amount">Total: ₱810</div>
-    <button class="checkout-btn">Check Out</button>
+    <div class="total-amount" id="totalAmount">Total: ₱0</div>
+    <button class="checkout-btn" id="checkoutBtn">Check Out</button>
   </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cartContainer = document.getElementById('cartItems');
+      const totalEl = document.getElementById('totalAmount');
+
+      function renderCart() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        if (cart.length === 0) {
+          cartContainer.innerHTML = `<p class="empty-cart">Your cart is empty!</p>`;
+          totalEl.textContent = 'Total: ₱0';
+          return;
+        }
+
+        let total = 0;
+        cartContainer.innerHTML = cart.map((item, index) => {
+          const priceNum = parseFloat(item.price.replace(/[₱,]/g, ''));
+          const itemTotal = priceNum * item.qty;
+          total += itemTotal;
+          return `
+            <div class="cart-item" data-index="${index}">
+              <img src="${item.img}" alt="${item.name}">
+              <div class="item-details">
+                <h3>${item.name}</h3>
+                <p>Qty: ${item.qty}</p>
+                <p>₱${itemTotal.toLocaleString()}</p>
+              </div>
+              <button class="remove-btn">Remove</button>
+            </div>
+          `;
+        }).join('');
+
+        totalEl.textContent = `Total: ₱${total.toLocaleString()}`;
+
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const index = e.target.closest('.cart-item').dataset.index;
+            removeItem(index);
+          });
+        });
+      }
+
+      function removeItem(index) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+      }
+
+      document.getElementById('checkoutBtn').addEventListener('click', () => {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (cart.length === 0) {
+          alert('Your cart is empty!');
+          return;
+        }
+        alert('Thank you for your order!');
+        localStorage.removeItem('cart');
+        renderCart();
+      });
+
+      renderCart();
+    });
+  </script>
 </body>
 </html>
