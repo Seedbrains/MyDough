@@ -136,7 +136,7 @@ const products = [
     { name: "Buttercream Dream", price: "₱250", img: "assets/product1.jpg" },
     { name: "Strawberry Swirl", price: "₱280", img: "assets/product2.jpg" },
     { name: "Choco Layers", price: "₱300", img: "assets/product3.jpg" },
-    { name: "Lemon Zest", price: "₱240", img: "assets/product4.jpg" },
+    { name: "Lemon Drizzle", price: "₱240", img: "assets/product4.jpg" },
     { name: "Matcha Joy", price: "₱270", img: "assets/product5.jpg" },
     { name: "Classic Vanilla", price: "₱220", img: "assets/product6.jpg" },
   ],
@@ -219,4 +219,38 @@ document.addEventListener("DOMContentLoaded", () => {
       </article>
     `).join('');
   }
+});
+
+/* ---------- CART FUNCTIONALITY ---------- */
+function addToCart(product) {
+  // Get existing cart or create a new one
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  // Check if item already exists
+  const existing = cart.find(item => item.name === product.name);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+
+  // Save updated cart
+  localStorage.setItem('cart', JSON.stringify(cart));
+
+  // Small visual feedback
+  alert(`${product.name} added to cart!`);
+}
+
+// Attach Add to Cart button events
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.add-cart').forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      // Determine which product was clicked based on current page products
+      const pageBtn = document.querySelector('.page-btn.active');
+      const pageIndex = pageBtn ? parseInt(pageBtn.dataset.page) - 1 : 0;
+      const items = products[pageIndex];
+      const product = items[index];
+      addToCart(product);
+    });
+  });
 });
