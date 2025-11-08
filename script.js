@@ -200,3 +200,23 @@ buttons.forEach((btn, i) => {
   });
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Render Top Picks (first 3 products from your first page)
+  const topCards = document.getElementById("topCards");
+  if (topCards && Array.isArray(products) && products.length > 0) {
+    const topPicks = products[0].slice(0, 3);
+    topCards.innerHTML = topPicks.map((p, index) => `
+      <article class="product">
+        <a href="product.html?id=${index + 1}">
+          <div class="product-media">
+            <img src="${p.img}" alt="${p.name}" onerror="this.style.backgroundColor='#ddd'; this.src='';">
+          </div>
+          <div class="product-meta">
+            <h3>${p.name}</h3>
+            <p class="price">${p.price}</p>
+          </div>
+        </a>
+      </article>
+    `).join('');
+  }
+});
