@@ -160,8 +160,8 @@
         <p class="price" id="productPrice">₱000</p>
 
         <div class="product-buttons">
-          <button class="btn btn-cart">Add to Cart</button>
-          <button class="btn btn-buy">Buy Now</button>
+          <button class="btn btn-cart" id="addToCartBtn">Add to Cart</button>
+          <button class="btn btn-buy" id="buyNowBtn">Buy Now</button>
         </div>
 
         <button class="back-btn" onclick="window.location.href='index.html#shop'">← Back to Shop</button>
@@ -176,26 +176,64 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Combine all subarrays into one flat product list
       const allProducts = products.flat();
-
-      // Get product by ?id from URL
       const params = new URLSearchParams(window.location.search);
       const id = parseInt(params.get("id"), 10) || 1;
       const current = allProducts[id - 1];
 
-      // Populate main product
       if (current) {
         document.getElementById("productName").textContent = current.name;
         document.getElementById("productImage").src = current.img;
         document.getElementById("productPrice").textContent = current.price;
       }
 
-      // Render 6 other random products (excluding current one)
-      const relatedGrid = document.getElementById("relatedGrid");
-      const others = allProducts.filter((p) => p.name !== current.name).slice(0, 6);
+      // Add to Cart Functionality
+      const addToCartBtn = document.getElementById("addToCartBtn");
+      addToCartBtn.addEventListener("click", () => {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existing = cart.find(item => item.name === current.name);
 
-      relatedGrid.innerHTML = others.map((p, index) => `
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          cart.push({
+            name: current.name,
+            price: current.price,
+            img: current.img,
+            qty: 1
+          });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert(`${current.name} added to cart!`);
+      });
+
+      // Buy Now button -> add then go straight to cart
+      const buyNowBtn = document.getElementById("buyNowBtn");
+      buyNowBtn.addEventListener("click", () => {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existing = cart.find(item => item.name === current.name);
+
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          cart.push({
+            name: current.name,
+            price: current.price,
+            img: current.img,
+            qty: 1
+          });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.location.href = "cart.html";
+      });
+
+      // Render related products
+      const relatedGrid = document.getElementById("relatedGrid");
+      const others = allProducts.filter(p => p.name !== current.name).slice(0, 6);
+
+      relatedGrid.innerHTML = others.map(p => `
         <a href="product.html?id=${allProducts.indexOf(p) + 1}" class="product-card">
           <img src="${p.img}" alt="${p.name}">
           <h3>${p.name}</h3>
@@ -203,7 +241,7 @@
         </a>
       `).join('');
 
-      // Animate related products
+      // Animate related cards
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
