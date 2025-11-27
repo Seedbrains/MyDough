@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MyDough — Login</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script src="navbar.js" defer></script>
+  <script src="auth.js" defer></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">MYDOUGH</div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#shop">Shop</a>
+        <a href="index.html#about">About</a>
+        <a href="login.html" class="cart-btn" aria-label="Login">Login</a>
+        <a href="cart.html" class="cart-btn" aria-label="View Cart">View Cart</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="auth-section">
+      <img src="assets/curve.png" alt="" class="curve" aria-hidden="true">
+      
+      <div class="container auth-container">
+        
+        <!-- LOGIN FORM -->
+        <div class="auth-form-wrapper" id="loginForm">
+          <h1 class="auth-title">Welcome to MyDough</h1>
+          
+          <form class="auth-form" id="loginFormElement">
+            <label for="loginUsername">Username</label>
+            <input type="text" id="loginUsername" name="username" placeholder="Username" required>
+            
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" name="password" placeholder="Password" required>
+            
+            <a href="#" class="forgot-link">FORGOT PASSWORD</a>
+            
+            <button type="submit" class="auth-btn">LOGIN</button>
+          </form>
+          
+          <p class="auth-switch">
+            New to MyDough? <a href="#" id="showSignup">Signup now!</a>
+          </p>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div class="auth-form-wrapper hidden" id="signupForm">
+          <h1 class="auth-title">Welcome to MyDough</h1>
+          
+          <form class="auth-form" id="signupFormElement">
+            <label for="signupUsername">Username</label>
+            <input type="text" id="signupUsername" name="username" placeholder="Username" required>
+            
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" name="password" placeholder="Password" required>
+            
+            <label for="signupConfirmPassword">Confirm Password</label>
+            <input type="password" id="signupConfirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+            
+            <label for="signupEmail">Email Address</label>
+            <input type="email" id="signupEmail" name="email" placeholder="Email Address" required>
+            
+            <button type="submit" class="auth-btn">REGISTER</button>
+          </form>
+          
+          <p class="auth-switch">
+            Already have an account? <a href="#" id="showLogin">Login here!</a>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="site-footer container">
+      <p>© MyDough — Handcrafted Pastries</p>
+    </footer>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyDough – My Purchases</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Anime.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script src="navbar.js" defer></script>
+
+  <style>
+    .purchases-section {
+      position: relative;
+      min-height: 100vh;
+      padding: 120px 20px 100px;
+      background: var(--cream);
+    }
+
+    .purchases-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .purchases-title {
+      font-family: 'Amatic SC', cursive;
+      font-size: 56px;
+      color: var(--deep-pink);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    /* Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 40px;
+      background: #d9d0d4;
+      border-radius: 8px;
+      padding: 4px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .filter-tab {
+      flex: 1;
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      padding: 12px 20px;
+      font-family: 'Amatic SC', cursive;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 6px;
+    }
+
+    .filter-tab.active {
+      background: white;
+      color: var(--deep-pink);
+    }
+
+    .filter-tab:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Order Cards */
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .order-id {
+      font-family: 'Amatic SC', cursive;
+      font-size: 28px;
+      color: var(--deep-pink);
+    }
+
+    .order-date {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .order-status {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-topay { background: #fff3cd; color: #856404; }
+    .status-toship { background: #cce5ff; color: #004085; }
+    .status-toreceive { background: #d1ecf1; color: #0c5460; }
+    .status-torate { background: #d4edda; color: #155724; }
+    .status-cancelled { background: #f8d7da; color: #721c24; }
+
+    /* Order Items */
+    .order-items {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .order-item {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .order-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #ddd;
+    }
+
+    .order-item-details {
+      flex: 1;
+    }
+
+    .order-item-name {
+      font-family: 'Amatic SC', cursive;
+      font-size: 22px;
+      color: var(--muted);
+      margin: 0 0 4px 0;
+    }
+
+    .order-item-meta {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* Order Footer */
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 2px solid #f0f0f0;
+    }
+
+    .order-total {
+      font-family: 'Amatic SC', cursive;
+      font-size: 26px;
+      color: var(--deep-pink);
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .order-btn {
+      background: #b8d4c5;
+      color: var(--muted);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-family: 'Amatic SC', cursive;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .order-btn:hover {
+      background: #a8c4b5;
+      transform: translateY(-2px);
+    }
+
+    .order-btn.secondary {
+      background: #d9d0d4;
+    }
+
+    .order-btn.secondary:hover {
+      background: #c9c0c4;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    .empty-state-text {
+      font-family: 'Amatic SC', cursive;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .empty-state-subtext {
+      font-size: 14px;
+      color: #999;
+    }
+
+    @media (max-width: 768px) {
+      .filter-tabs {
+        flex-wrap: wrap;
+      }
+
+      .filter-tab {
+        font-size: 20px;
+        padding: 10px 12px;
+      }
+
+      .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .order-footer {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+      }
+
+      .order-actions {
+        justify-content: stretch;
+        flex-direction: column;
+      }
+
+      .order-item {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+    
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">MYDOUGH</div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#shop">Shop</a>
+        <a href="index.html#about">About</a>
+        <a href="login.html" class="cart-btn auth-link" id="authLink">Login</a>
+        <a href="cart.html" class="cart-btn" aria-label="View Cart">View Cart</a>
+      </nav>
+    </div>
+  </header>
+
+
+
+  <main class="purchases-section">
+     <img src="assets/curve.png" alt="" class="curve">
+    <div class="purchases-container">
+      <h1 class="purchases-title">YOUR PURCHASES</h1>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-status="all">ALL</button>
+        <button class="filter-tab" data-status="To Pay">TO PAY</button>
+        <button class="filter-tab" data-status="To Ship">TO SHIP</button>
+        <button class="filter-tab" data-status="To Receive">TO RECEIVE</button>
+        <button class="filter-tab" data-status="To Rate">TO RATE</button>
+        <button class="filter-tab" data-status="Cancelled">CANCELLED</button>
+      </div>
+
+      <!-- Orders List -->
+      <div class="orders-list" id="ordersList"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer container">
+    <p>© MyDough – Handcrafted Pastries</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Page fade in animation
+      anime({
+        targets: 'body',
+        opacity: [0, 1],
+        duration: 600,
+        easing: 'easeOutQuad'
+      });
+
+      // Animate curve
+      anime({
+        targets: '.curve',
+        opacity: [0, 1],
+        translateY: [-50, 0],
+        duration: 1000,
+        easing: 'easeOutCubic'
+      });
+
+      // Animate title and tabs
+      anime({
+        targets: '.purchases-title',
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 800,
+        delay: 200,
+        easing: 'easeOutCubic'
+      });
+
+      anime({
+        targets: '.filter-tabs',
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 800,
+        delay: 400,
+        easing: 'easeOutCubic'
+      });
+
+      let currentFilter = 'all';
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+      // Filter tabs
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentFilter = tab.dataset.status;
+          renderOrders();
+        });
+      });
+
+      function getStatusClass(status) {
+        const statusMap = {
+          'To Pay': 'status-topay',
+          'To Ship': 'status-toship',
+          'To Receive': 'status-toreceive',
+          'To Rate': 'status-torate',
+          'Cancelled': 'status-cancelled'
+        };
+        return statusMap[status] || 'status-topay';
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric', 
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      function renderOrders() {
+        const ordersList = document.getElementById('ordersList');
+        
+        let filteredOrders = orders;
+        if (currentFilter !== 'all') {
+          filteredOrders = orders.filter(order => order.status === currentFilter);
+        }
+
+        if (filteredOrders.length === 0) {
+          ordersList.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">📦</div>
+              <div class="empty-state-text">No orders found</div>
+              <div class="empty-state-subtext">
+                ${currentFilter === 'all' ? 'You haven\'t placed any orders yet' : `No orders with status "${currentFilter}"`}
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        ordersList.innerHTML = filteredOrders.map(order => `
+          <div class="order-card">
+            <div class="order-header">
+              <div>
+                <div class="order-id">Order #${order.id}</div>
+                <div class="order-date">${formatDate(order.date)}</div>
+              </div>
+              <span class="order-status ${getStatusClass(order.status)}">${order.status}</span>
+            </div>
+
+            <div class="order-items">
+              ${order.items.map(item => `
+                <div class="order-item">
+                  <img src="${item.img}" alt="${item.name}">
+                  <div class="order-item-details">
+                    <div class="order-item-name">${item.name}</div>
+                    <div class="order-item-meta">Qty: ${item.qty} × ${item.price}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="order-footer">
+              <div class="order-total">Total: ₱${order.total.toLocaleString()}</div>
+              <div class="order-actions">
+                ${order.status === 'To Pay' ? '<button class="order-btn" onclick="payOrder(' + order.id + ')">PAY NOW</button>' : ''}
+                ${order.status === 'To Receive' ? '<button class="order-btn" onclick="receiveOrder(' + order.id + ')">ORDER RECEIVED</button>' : ''}
+                ${order.status === 'To Rate' ? '<button class="order-btn" onclick="rateOrder(' + order.id + ')">RATE</button>' : ''}
+                ${order.status === 'To Pay' ? '<button class="order-btn secondary" onclick="cancelOrder(' + order.id + ')">CANCEL</button>' : ''}
+                <button class="order-btn secondary" onclick="viewOrder(' + order.id + ')">VIEW DETAILS</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Animate order cards
+        anime({
+          targets: '.order-card',
+          opacity: [0, 1],
+          translateY: [20, 0],
+          duration: 600,
+          delay: anime.stagger(100),
+          easing: 'easeOutCubic'
+        });
+      }
+
+      renderOrders();
+
+      // Global functions for order actions
+      window.payOrder = (orderId) => {
+        const orderIndex = orders.findIndex(o => o.id === orderId);
+        if (orderIndex !== -1) {
+          orders[orderIndex].status = 'To Ship';
+          localStorage.setItem('orders', JSON.stringify(orders));
+          alert('Payment successful! Your order will be shipped soon.');
+          renderOrders();
+        }
+      };
+
+      window.receiveOrder = (orderId) => {
+        const orderIndex = orders.findIndex(o => o.id === orderId);
+        if (orderIndex !== -1) {
+          orders[orderIndex].status = 'To Rate';
+          localStorage.setItem('orders', JSON.stringify(orders));
+          alert('Order marked as received! Please rate your purchase.');
+          renderOrders();
+        }
+      };
+
+      window.rateOrder = (orderId) => {
+        alert('Rating feature coming soon!');
+      };
+
+      window.cancelOrder = (orderId) => {
+        if (confirm('Are you sure you want to cancel this order?')) {
+          const orderIndex = orders.findIndex(o => o.id === orderId);
+          if (orderIndex !== -1) {
+            orders[orderIndex].status = 'Cancelled';
+            localStorage.setItem('orders', JSON.stringify(orders));
+            alert('Order cancelled successfully.');
+            renderOrders();
+          }
+        }
+      };
+
+      window.viewOrder = (orderId) => {
+        alert('Order details view coming soon!');
+      };
+    });
+  </script>
+</body>
+</html>
