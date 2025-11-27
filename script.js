@@ -1,500 +1,240 @@
-/* Variables & base */
-:root {
-  --pink: #f6b6c6;
-  --header: #F7AEB9;
-  --deep-pink: #f28fa3;
-  --cream: #fff6e6;
-  --muted: #6b5a5a;
-  --accent-line: #6b2b21;
-  --max-width: 900px;
-}
+/* ---------- Basic entrance animations with anime.js ---------- */
+/* NOTE: anime.js is loaded in index.html before this script.
+   We also trigger reveal animations when elements enter viewport. */
 
-* {
-  box-sizing: border-box;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  // page load timeline
+  const tl = anime.timeline({ easing: 'easeOutCubic', duration: 700 });
 
-body,
-html {
-  padding-top: 30px;
-  height: 100%;
-  margin: 0;
-  font-family: Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: var(--cream);
-  color: var(--muted);
-}
-
-/* Container resets */
-.container {
-  width: 92%;
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-
-/* Header */
-.site-header {
-  background: var(--header);
-  position: fixed;
-  top: 0;
-  z-index: 9999;
-  width: 100%;
-}
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 0;
-}
-
-.brand {
-  font-family: 'Amatic SC', cursive;
-  font-size: 34px;
-  color: #fff;
-  letter-spacing: 4px;
-}
-
-.main-nav {
-  display: flex;
-  align-items: center;
-}
-
-.main-nav a {
-  color: #fff;
-  text-decoration: none;
-  margin-left: 28px;
-  font-size: 14px;
-  opacity: 0.95;
-  position: relative;
-}
-
-.main-nav a:hover {
-  color: var(--accent-line);
-}
-
-/* Account Popup */
-.account-popup {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 12px;
-  background: #b8d4c5;
-  border-radius: 8px;
-  padding: 8px;
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 180px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 10000;
-  opacity: 0;
-}
-
-.account-popup::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  right: 20px;
-  width: 12px;
-  height: 12px;
-  background: #b8d4c5;
-  transform: rotate(45deg);
-}
-
-.account-popup-link {
-  font-family: 'Amatic SC', cursive;
-  font-size: 20px;
-  color: var(--muted);
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  display: block;
-  margin: 0 !important;
-  white-space: nowrap;
-}
-
-.account-popup-link:hover {
-  background: #a8c4b5;
-  color: var(--muted);
-}
-
-/* HERO */
-.hero {
-  position: relative;
-  padding: 0 0 8px 0;
-  overflow: visible;
-  background: transparent;
-  z-index: 1;
-}
-
-.curve {
-  position: absolute;
-  left: 0%;
-  top: 0;
-  width: 100%;
-  height: 600px;
-  object-fit: cover;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.curveproduct {
-  position: absolute;
-  left: 0%;
-  top: 0;
-  width: 100%;
-  height: 800px;
-  object-fit: cover;
-  pointer-events: none;
-  z-index: 0;
-}
+  tl
+  .add({
+    targets: '.hero-title',
+    translateX: [40, 0],
+    opacity: [0, 1]
+  }, '-=400')
+  .add({
+    targets: '.hero-sub',
+    translateY: [-10, 0],
+    opacity: [0, 1]
+  }, '-=350')
+  .add({
+    targets: '#cake',
+    translateY: [80, 0],
+    opacity: [0, 1],
+    duration: 900,
+    easing: 'easeOutElastic(1, .7)'
+  }, '-=450')
+  .add({
+    targets: '.go-btn',
+    scale: [0.8, 1],
+    opacity: [0, 1],
+    duration: 900,
+    easing: 'easeOutElastic(1, .75)'
+  }, '-=550');
 
 
-.hero-inner {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  padding-top: 36px;
-  position: relative;
-  z-index: 2;
-}
-
-.hero-left {
-  flex: 0 0 50%;
-  max-width: 50%;
-}
-
-.hero-left img {
-  display: block;
-  width: 100%;
-  max-width: 520px;
-}
-
-.hero-right {
-  flex: 0 0 50%;
-  max-width: 50%;
-  text-align: center;
-  padding-top: 40px;
-}
-
-.hero-title {
-  font-family: 'Amatic SC', cursive;
-  font-size: 64px;
-  color: var(--deep-pink);
-  line-height: 0.95;
-  margin: 0;
-}
-
-.hero-sub {
-  font-size: 12px;
-  letter-spacing: 6px;
-  color: #f7c7d1;
-  margin: 18px 0 26px;
-}
-
-/* Go button */
-.go-btn {
-  position: relative;
-  z-index: 5;
-  background: var(--deep-pink);
-  color: #fff;
-  border: none;
-  padding: 18px 46px;
-  font-family: 'Amatic SC', cursive;
-  font-size: 34px;
-  border-radius: 4px;
-  box-shadow: 10px 10px 0 rgba(0,0,0,0.08);
-  cursor: pointer;
-  transition: transform .18s, box-shadow .18s;
-  display: inline-block;
-  margin-top: 18px;
-}
-
-.go-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 16px 16px 16px rgba(0,0,0,0.08);
-}
-
-/* small divider under hero */
-.hero-divider {
-  height: 6px;
-  background: transparent;
-  margin-top: 20px;
-}
-
-/* Shop top picks */
-.section-title {
-  font-family: 'Amatic SC', cursive;
-  color: var(--deep-pink);
-  font-size: 36px;
-  text-align: center;
-  margin: 20px 0 18px;
-}
-
-.top-cards {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 28px;
-}
-
-.card.small {
-  width: 116px;
-  height: 90px;
-  background: #ddd;
-  border-radius: 3px;
-}
-
-/* horizontal thin divider */
-.section-divider {
-  height: 2px;
-  background: var(--accent-line);
-  margin: 18px 0 28px;
-  opacity: 0.6;
-}
-
-/* product grid */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 26px;
-  margin-bottom: 42px;
-}
-
-.product {
-  background: transparent;
-}
-
-.product-media {
-  height: 240px;
-  background: #e6e6e6;
-  border-radius: 4px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.product-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.product-meta {
-  padding: 10px 2px;
-}
-
-.product-meta h3 {
-  font-family: 'Amatic SC', cursive;
-  margin: 0 0 8px;
-  font-size: 20px;
-}
-
-.price {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-/* About */
-.about {
-  padding: 18px 0 60px 0;
-}
-
-.about-title {
-  font-family: 'Amatic SC', cursive;
-  font-size: 32px;
-  color: var(--deep-pink);
-  margin: 8px 0 16px;
-}
-
-.about-inner {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.about-text {
-  flex: 1;
-  padding-right: 8px;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.about-media {
-  flex: 0 0 300px;
-  background: #e6e6e6;
-  border-radius: 6px;
-  height: 220px;
-  overflow: hidden;
-}
-
-.about-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* Login */
-.login {
-  padding: 26px 0 36px;
-}
-
-.login-form {
-  max-width: 420px;
-  margin: 8px 0 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.login-form input {
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #e7e2e2;
-}
-
-.login-form .submit {
-  background: var(--deep-pink);
-  color: #fff;
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* Footer */
-.site-footer {
-  text-align: center;
-  padding: 28px 0 60px;
-  color: #9a8b8b;
-}
-
-/* Responsive */
-@media (max-width: 820px) {
-  .container {
-    width: 94%;
+  // Go button hover pulse
+  const goBtn = document.getElementById('goBtn');
+  if (goBtn) {
+    goBtn.addEventListener('mouseenter', () => {
+      anime.remove(goBtn);
+      anime({
+        targets: goBtn,
+        scale: 1.04,
+        duration: 220,
+        easing: 'easeOutQuad'
+      });
+    });
+    goBtn.addEventListener('mouseleave', () => {
+      anime.remove(goBtn);
+      anime({
+        targets: goBtn,
+        scale: 1,
+        duration: 220,
+        easing: 'easeOutQuad'
+      });
+    });
   }
 
-  .hero-inner {
-    flex-direction: column-reverse;
-    align-items: center;
+  // Smooth scroll for internal links only (those starting with #)
+  document.querySelectorAll('.main-nav a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = a.getAttribute('href').substring(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      window.scrollTo({
+        top: el.getBoundingClientRect().top + window.scrollY - 12,
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  // Smooth scroll for internal links only (those starting with #)
+  document.querySelectorAll('.main-nav a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = a.getAttribute('href').substring(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      window.scrollTo({
+        top: el.getBoundingClientRect().top + window.scrollY - 12,
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  // Intersection-based reveal: animate elements as they scroll into view
+  const revealTargets = document.querySelectorAll('.product, .about-inner, .section-title, .top-cards, .product-grid .product');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        anime({
+          targets: entry.target,
+          translateY: [18, 0],
+          opacity: [0, 1],
+          duration: 700,
+          easing: 'easeOutCubic'
+        });
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealTargets.forEach(t => io.observe(t));
+
+  /* ---------- Page transition animation ---------- */
+  // Fade in on load
+  anime({
+    targets: 'body',
+    opacity: [0, 1],
+    duration: 600,
+    easing: 'easeOutQuad'
+  });
+});
+
+
+/* ---------- Product rendering ---------- */
+const products = [
+  [
+    { name: "Buttercream Dream", price: "₱250", img: "assets/product1.jpg" },
+    { name: "Strawberry Swirl", price: "₱280", img: "assets/product2.jpg" },
+    { name: "Choco Layers", price: "₱300", img: "assets/product3.jpg" },
+    { name: "Lemon Drizzle", price: "₱240", img: "assets/product4.jpg" },
+    { name: "Matcha Joy", price: "₱270", img: "assets/product5.jpg" },
+    { name: "Classic Vanilla", price: "₱220", img: "assets/product6.jpg" },
+  ],
+  [
+    { name: "Red Velvet Bliss", price: "₱290", img: "assets/product7.jpg" },
+    { name: "Caramel Crunch", price: "₱260", img: "assets/product8.jpg" },
+    { name: "Mint Chip Magic", price: "₱250", img: "assets/product9.jpg" },
+    { name: "Cookies n' Cream", price: "₱280", img: "assets/product10.jpg" },
+    { name: "Dark Fudge", price: "₱310", img: "assets/product11.jpg" },
+    { name: "Hazelnut Heaven", price: "₱320", img: "assets/product12.jpg" },
+  ],
+  [
+    { name: "Mocha Mood", price: "₱250", img: "assets/product13.jpg" },
+    { name: "Blueberry Burst", price: "₱280", img: "assets/product14.jpg" },
+    { name: "Peanut Butter Pie", price: "₱270", img: "assets/product15.jpg" },
+    { name: "Raspberry Ripple", price: "₱290", img: "assets/product16.jpg" },
+    { name: "Honey Crunch", price: "₱260", img: "assets/product17.jpg" },
+    { name: "Velvet Choco Chip", price: "₱300", img: "assets/product18.jpg" },
+  ],
+  [
+    { name: "Tiramisu Touch", price: "₱340", img: "assets/product19.jpg" },
+    { name: "Banoffee Bliss", price: "₱300", img: "assets/product20.jpg" },
+    { name: "Berry Cheesecake", price: "₱330", img: "assets/product21.jpg" },
+    { name: "Salted Caramel Slice", price: "₱310", img: "assets/product22.jpg" },
+    { name: "Orange Cream Delight", price: "₱280", img: "assets/product23.jpg" },
+    { name: "Pistachio Paradise", price: "₱350", img: "assets/product24.jpg" },
+  ]
+];
+
+const grid = document.getElementById('productGrid');
+const buttons = document.querySelectorAll('.page-btn');
+
+function renderProducts(pageIndex) {
+  const items = products[pageIndex];
+  grid.innerHTML = items.map((p, index) => `
+    <article class="product">
+      <a href="product.html?id=${pageIndex * 6 + index + 1}" class="product-link">
+        <div class="product-media">
+          <img src="${p.img}" alt="${p.name}" onerror="this.style.backgroundColor='#ddd'; this.src='';">
+        </div>
+        <div class="product-meta">
+          <h3>${p.name}</h3>
+          <p class="price">${p.price}</p>
+        </div>
+      </a>
+      <div class="product-buttons">
+        <button class="btn buy-now">Buy Now</button>
+        <button class="btn add-cart">Add to Cart</button>
+      </div>
+    </article>
+  `).join('');
+}
+
+renderProducts(0);
+
+buttons.forEach((btn, i) => {
+  btn.addEventListener('click', () => {
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProducts(i);
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Render Top Picks (first 3 products from your first page)
+  const topCards = document.getElementById("topCards");
+  if (topCards && Array.isArray(products) && products.length > 0) {
+    const topPicks = products[0].slice(0, 3);
+    topCards.innerHTML = topPicks.map((p, index) => `
+      <article class="product">
+        <a href="product.html?id=${index + 1}">
+          <div class="product-media">
+            <img src="${p.img}" alt="${p.name}" onerror="this.style.backgroundColor='#ddd'; this.src='';">
+          </div>
+          <div class="product-meta">
+            <h3>${p.name}</h3>
+            <p class="price">${p.price}</p>
+          </div>
+        </a>
+      </article>
+    `).join('');
+  }
+});
+
+/* ---------- CART FUNCTIONALITY ---------- */
+function addToCart(product) {
+  // Get existing cart or create a new one
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  // Check if item already exists
+  const existing = cart.find(item => item.name === product.name);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
   }
 
-  .hero-left,
-  .hero-right {
-    max-width: 100%;
-    flex-basis: 100%;
-  }
+  // Save updated cart
+  localStorage.setItem('cart', JSON.stringify(cart));
 
-  .hero-right {
-    padding-top: 8px;
-  }
-
-  .hero-title {
-    font-size: 48px;
-  }
-
-  .product-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .about-inner {
-    flex-direction: column-reverse;
-  }
-
-  .about-media {
-    width: 100%;
-    height: 220px;
-  }
+  // Small visual feedback
+  alert(`${product.name} added to cart!`);
 }
 
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 30px 0 50px;
-}
-
-.page-btn {
-  background: var(--deep-pink);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-family: 'Amatic SC', cursive;
-  font-size: 22px;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.page-btn:hover {
-  background: var(--pink);
-  transform: translateY(-2px);
-}
-
-.page-btn.active {
-  background: var(--accent-line);
-}
-
-.product-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-/* Product action buttons */
-.btn {
-  display: inline-block;
-  padding: 0.55em 1.2em;
-  border-radius: 6px;
-  border: none;
-  background-color: var(--pink);
-  color: #fff;
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.15s ease;
-}
-
-/* Hover & active states */
-.btn:hover {
-  background-color: var(--deep-pink);
-  transform: translateY(-2px);
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-/* Container for multiple buttons */
-.product-actions {
-  margin-top: 0.8em;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6em;
-  justify-content: flex-start;
-}
-
-.cart-btn {
-  text-decoration: none;
-  font-size: 22px;
-  color: white;
-  transition: opacity 0.2s ease;
-}
-
-.cart-btn:hover {
-  opacity: 0.8;
-}
-
-.auth-link-wrapper {
-  position: relative; /* ensures popup is positioned relative to wrapper */
-  display: inline-block; /* important for proper sizing */
-}
-
+// Attach Add to Cart button events
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.add-cart').forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      // Determine which product was clicked based on current page products
+      const pageBtn = document.querySelector('.page-btn.active');
+      const pageIndex = pageBtn ? parseInt(pageBtn.dataset.page) - 1 : 0;
+      const items = products[pageIndex];
+      const product = items[index];
+      addToCart(product);
+    });
+  });
+});
