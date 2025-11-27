@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MyDough — Cart</title>
+  <title>MyDough – Cart</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
@@ -11,6 +11,7 @@
 
   <!-- Anime.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script src="navbar.js" defer></script>
 
   <script defer>
     document.addEventListener('DOMContentLoaded', () => {
@@ -20,6 +21,25 @@
         opacity: [0, 1],
         duration: 600,
         easing: 'easeOutQuad'
+      });
+
+      // Animate curve coming down
+      anime({
+        targets: '.curve',
+        opacity: [0, 1],
+        translateY: [-50, 0],
+        duration: 1000,
+        easing: 'easeOutCubic'
+      });
+
+      // Animate cart title
+      anime({
+        targets: '.cart-title',
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 800,
+        delay: 300,
+        easing: 'easeOutCubic'
       });
 
       // Fade out navigation animation
@@ -37,15 +57,6 @@
             });
           });
         }
-      });
-
-      // Animate curve
-      anime({
-        targets: '.curve',
-        opacity: [0, 1],
-        translateY: [-30, 0],
-        duration: 800,
-        easing: 'easeOutCubic'
       });
     });
   </script>
@@ -201,7 +212,7 @@
         <a href="index.html">Home</a>
         <a href="index.html#shop">Shop</a>
         <a href="index.html#about">About</a>
-        <a href="index.html#login">Login</a>
+        <a href="login.html" class="cart-btn auth-link" id="authLink">Login</a>
         <a href="cart.html" class="cart-btn" aria-label="View Cart">View Cart</a>
       </nav>
     </div>
@@ -222,6 +233,15 @@
   </footer>
 
   <script>
+    // Check if user is logged in and update navbar
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const authLink = document.getElementById('authLink');
+    if (currentUser && authLink) {
+      authLink.textContent = 'Account';
+      authLink.setAttribute('aria-label', 'Account');
+      authLink.href = 'account.html';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const cartContainer = document.getElementById('cartItems');
       const totalEl = document.getElementById('totalAmount');
@@ -255,6 +275,16 @@
 
         totalEl.textContent = `Total: ₱${total.toLocaleString()}`;
 
+        // Animate cart items appearing
+        anime({
+          targets: '.cart-item',
+          opacity: [0, 1],
+          translateY: [20, 0],
+          duration: 600,
+          delay: anime.stagger(100),
+          easing: 'easeOutCubic'
+        });
+
         document.querySelectorAll('.remove-btn').forEach(btn => {
           btn.addEventListener('click', (e) => {
             const index = e.target.closest('.cart-item').dataset.index;
@@ -270,15 +300,15 @@
         renderCart();
       }
 
+      // ✅ UPDATED: Redirect to checkout.html instead of just alerting
       document.getElementById('checkoutBtn').addEventListener('click', () => {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         if (cart.length === 0) {
           alert('Your cart is empty!');
           return;
         }
-        alert('Thank you for your order!');
-        localStorage.removeItem('cart');
-        renderCart();
+        // Redirect to checkout page
+        window.location.href = 'checkout.html';
       });
 
       renderCart();
