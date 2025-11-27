@@ -8,17 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   tl
   .add({
-    targets: '.brand',
-    translateY: [-18, 0],
-    opacity: [0, 1]
-  })
-  .add({
-    targets: '.main-nav a',
-    translateY: [-10, 0],
-    opacity: [0, 1],
-    delay: anime.stagger(100)
-  }, '-=500')
-  .add({
     targets: '.hero-title',
     translateX: [40, 0],
     opacity: [0, 1]
@@ -81,6 +70,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Smooth scroll for internal links only (those starting with #)
+  document.querySelectorAll('.main-nav a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = a.getAttribute('href').substring(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      window.scrollTo({
+        top: el.getBoundingClientRect().top + window.scrollY - 12,
+        behavior: 'smooth'
+      });
+    });
+  });
+
   // Intersection-based reveal: animate elements as they scroll into view
   const revealTargets = document.querySelectorAll('.product, .about-inner, .section-title, .top-cards, .product-grid .product');
   const io = new IntersectionObserver((entries) => {
@@ -108,25 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
     duration: 600,
     easing: 'easeOutQuad'
   });
-
-  // Fade out when navigating to another page
-  document.querySelectorAll('a[href]').forEach(link => {
-    const url = link.getAttribute('href');
-    if (url && !url.startsWith('#') && !url.startsWith('http')) {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        anime({
-          targets: 'body',
-          opacity: [1, 0],
-          duration: 500,
-          easing: 'easeInQuad',
-          complete: () => {
-            window.location.href = url;
-          }
-        });
-      });
-    }
-  });
 });
 
 
@@ -144,7 +128,7 @@ const products = [
     { name: "Red Velvet Bliss", price: "₱290", img: "assets/product7.jpg" },
     { name: "Caramel Crunch", price: "₱260", img: "assets/product8.jpg" },
     { name: "Mint Chip Magic", price: "₱250", img: "assets/product9.jpg" },
-    { name: "Cookies n’ Cream", price: "₱280", img: "assets/product10.jpg" },
+    { name: "Cookies n' Cream", price: "₱280", img: "assets/product10.jpg" },
     { name: "Dark Fudge", price: "₱310", img: "assets/product11.jpg" },
     { name: "Hazelnut Heaven", price: "₱320", img: "assets/product12.jpg" },
   ],
