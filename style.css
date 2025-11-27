@@ -53,17 +53,71 @@ html {
   letter-spacing: 4px;
 }
 
+.main-nav {
+  display: flex;
+  align-items: center;
+}
+
 .main-nav a {
   color: #fff;
   text-decoration: none;
   margin-left: 28px;
   font-size: 14px;
   opacity: 0.95;
+  position: relative;
 }
 
 .main-nav a:hover {
   color: var(--accent-line);
 }
+
+/* Account Popup */
+.account-popup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 12px;
+  background: #b8d4c5;
+  border-radius: 8px;
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 10000;
+  opacity: 0;
+}
+
+.account-popup::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  background: #b8d4c5;
+  transform: rotate(45deg);
+}
+
+.account-popup-link {
+  font-family: 'Amatic SC', cursive;
+  font-size: 20px;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  display: block;
+  margin: 0 !important;
+  white-space: nowrap;
+}
+
+.account-popup-link:hover {
+  background: #a8c4b5;
+  color: var(--muted);
+}
+
 /* HERO */
 .hero {
   position: relative;
@@ -83,6 +137,7 @@ html {
   pointer-events: none;
   z-index: 0;
 }
+
 .curveproduct {
   position: absolute;
   left: 0%;
@@ -93,6 +148,7 @@ html {
   pointer-events: none;
   z-index: 0;
 }
+
 
 .hero-inner {
   display: flex;
@@ -138,6 +194,8 @@ html {
 
 /* Go button */
 .go-btn {
+  position: relative;
+  z-index: 5;
   background: var(--deep-pink);
   color: #fff;
   border: none;
@@ -148,6 +206,8 @@ html {
   box-shadow: 10px 10px 0 rgba(0,0,0,0.08);
   cursor: pointer;
   transition: transform .18s, box-shadow .18s;
+  display: inline-block;
+  margin-top: 18px;
 }
 
 .go-btn:hover {
@@ -352,28 +412,6 @@ html {
   }
 }
 
-.go-btn {
-  position: relative;       /* ensures it appears above overlapping layers */
-  z-index: 5;               /* higher than curve or hero image */
-  background: var(--deep-pink);
-  color: #fff;
-  border: none;
-  padding: 18px 46px;
-  font-family: 'Amatic SC', cursive;
-  font-size: 34px;
-  border-radius: 4px;
-  box-shadow: 10px 10px 0 rgba(0,0,0,0.08);
-  cursor: pointer;
-  transition: transform .18s, box-shadow .18s;
-  display: inline-block;    /* prevents weird flex issues */
-  margin-top: 18px;         /* keeps some spacing from text */
-}
-
-.go-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 16px 16px 16px rgba(0,0,0,0.08);
-}
-
 /* Pagination */
 .pagination {
   display: flex;
@@ -455,4 +493,8 @@ html {
   opacity: 0.8;
 }
 
+.auth-link-wrapper {
+  position: relative; /* ensures popup is positioned relative to wrapper */
+  display: inline-block; /* important for proper sizing */
+}
 
