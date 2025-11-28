@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyDough – Customize Your Cake</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Anime.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+  <script src="navbar.js" defer></script>
+
+  <style>
+    /* Account Popup Styles */
+    .account-popup {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 12px;
+      background: #b8d4c5;
+      border-radius: 8px;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 180px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10000;
+      opacity: 0;
+    }
+
+    .account-popup::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      right: 20px;
+      width: 12px;
+      height: 12px;
+      background: #b8d4c5;
+      transform: rotate(45deg);
+    }
+
+    .account-popup-link {
+      font-family: 'Amatic SC', cursive;
+      font-size: 20px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: block;
+      margin: 0 !important;
+      white-space: nowrap;
+    }
+
+    .account-popup-link:hover {
+      background: #a8c4b5;
+      color: var(--muted);
+    }
+
+    .customize-section {
+      position: relative;
+      min-height: 100vh;
+      padding: 100px 20px 60px;
+      background: var(--pink);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .customize-container {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* Left Side - Cake Preview */
+    .cake-preview {
+      background: var(--cream);
+      border-radius: 16px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 500px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 120px;
+    }
+
+    .cake-canvas {
+      width: 100%;
+      max-width: 320px;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .cake-display {
+      width: 280px;
+      height: 320px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    /* Cake Layers */
+    .cake-layer {
+      width: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 8px 8px 4px 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .cake-layer-1 { 
+      width: 70%; 
+      height: 70px;
+      z-index: 3;
+    }
+
+    .cake-layer-2 { 
+      width: 85%; 
+      height: 80px;
+      z-index: 2;
+      margin-top: -8px;
+    }
+
+    .cake-layer-3 { 
+      width: 100%; 
+      height: 90px;
+      z-index: 1;
+      margin-top: -8px;
+    }
+
+    .layer-body {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Filling stripes */
+    .filling-stripe {
+      position: absolute;
+      width: 100%;
+      height: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.8;
+    }
+
+    .cake-frosting {
+      width: 105%;
+      height: 16px;
+      border-radius: 50%;
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .cake-topping {
+      position: absolute;
+      top: -45px;
+      font-size: 42px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 100%;
+    }
+
+    .topping-item {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .topping-item:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .topping-item:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    .topping-item:nth-child(4) {
+      animation-delay: 0.9s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Sprinkles decoration */
+    .sprinkle {
+      position: absolute;
+      width: 3px;
+      height: 8px;
+      border-radius: 2px;
+      animation: sparkle 2s infinite;
+    }
+
+    /* Flavor visual effects */
+    .flavor-shine {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+
+    .flavor-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px 8px 0 0;
+      pointer-events: none;
+    }
+
+    .flavor-mint { box-shadow: inset 0 0 20px rgba(152, 251, 152, 0.4); }
+    .flavor-coffee { box-shadow: inset 0 0 20px rgba(101, 67, 33, 0.4); }
+    .flavor-coconut { box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5); }
+    .flavor-almond { box-shadow: inset 0 0 20px rgba(210, 180, 140, 0.4); }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .dough-text {
+      font-family: 'Amatic SC', cursive;
+      font-size: 48px;
+      color: var(--deep-pink);
+      text-align: center;
+      line-height: 1;
+      margin-top: 20px;
+    }
+
+    .go-button {
+      background: var(--deep-pink);
+      color: white;
+      border: none;
+      padding: 14px 48px;
+      border-radius: 8px;
+      font-family: 'Amatic SC', cursive;
+      font-size: 32px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(242, 143, 163, 0.4);
+    }
+
+    .go-button:hover {
+      background: #e07a8f;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(242, 143, 163, 0.6);
+    }
+
+    .go-button:active {
+      transform: translateY(0);
+    }
+
+    /* Right Side - Options */
+    .customize-options {
+      background: transparent;
+    }
+
+    .option-section {
+      margin-bottom: 30px;
+    }
+
+    .option-header {
+      font-family: 'Amatic SC', cursive;
+      font-size: 32px;
+      color: white;
+      margin-bottom: 15px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .option-header:hover {
+      color: var(--cream);
+    }
+
+    .option-arrow {
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+
+    .option-arrow.open {
+      transform: rotate(90deg);
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 15px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .option-grid.open {
+      max-height: 600px;
+      margin-bottom: 15px;
+    }
+
+    .option-card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(242, 143, 163, 0.1) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .option-card:hover::before {
+      opacity: 1;
+    }
+
+    .option-card:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .option-card.selected {
+      border-color: var(--deep-pink);
+      background: linear-gradient(135deg, #fff5f7 0%, #ffe8ed 100%);
+      transform: scale(1.05);
+    }
+
+    .option-card.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--deep-pink);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .option-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .option-card:hover .option-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .option-label {
+      font-family: 'Amatic SC', cursive;
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    @media (max-width: 968px) {
+      .customize-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .cake-preview {
+        position: relative;
+        top: 0;
+      }
+
+      .option-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">MYDOUGH</div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#shop">Shop</a>
+        <a href="index.html#about">About</a>
+        <a href="login.html" class="cart-btn auth-link" id="authLink">Login</a>
+        <a href="cart.html" class="cart-btn" aria-label="View Cart">View Cart</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="customize-section">
+    <div class="customize-container">
+      <!-- Left: Cake Preview -->
+      <div class="cake-preview">
+        <div class="cake-canvas">
+          <div class="cake-display" id="cakeDisplay">
+            <!-- Cake will be rendered here -->
+          </div>
+        </div>
+        <div class="dough-text">
+          DOUGH<br>IT<br>YOURSELF
+        </div>
+        <button class="go-button" id="addToCartBtn">Go!</button>
+      </div>
+
+      <!-- Right: Customization Options -->
+      <div class="customize-options">
+        <!-- Base Section -->
+        <div class="option-section">
+          <div class="option-header" onclick="toggleSection('base')">
+            <span class="option-arrow" id="arrow-base">▶</span>
+            Base ▼
+          </div>
+          <div class="option-grid" id="base-options">
+            <div class="option-card selected" data-type="base" data-value="vanilla" data-color="#f5deb3">
+              <div class="option-icon">🍰</div>
+              <div class="option-label">Vanilla</div>
+            </div>
+            <div class="option-card" data-type="base" data-value="chocolate" data-color="#8b4513">
+              <div class="option-icon">🍫</div>
+              <div class="option-label">Chocolate</div>
+            </div>
+            <div class="option-card" data-type="base" data-value="strawberry" data-color="#ffb6c1">
+              <div class="option-icon">🍓</div>
+              <div class="option-label">Strawberry</div>
+            </div>
+            <div class="option-card" data-type="base" data-value="red-velvet" data-color="#dc143c">
+              <div class="option-icon">❤️</div>
+              <div class="option-label">Red Velvet</div>
+            </div>
+            <div class="option-card" data-type="base" data-value="matcha" data-color="#88b04b">
+              <div class="option-icon">🍵</div>
+              <div class="option-label">Matcha</div>
+            </div>
+            <div class="option-card" data-type="base" data-value="lemon" data-color="#fff44f">
+              <div class="option-icon">🍋</div>
+              <div class="option-label">Lemon</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fillings Section -->
+        <div class="option-section">
+          <div class="option-header" onclick="toggleSection('fillings')">
+            <span class="option-arrow" id="arrow-fillings">▶</span>
+            Fillings ▼
+          </div>
+          <div class="option-grid" id="fillings-options">
+            <div class="option-card" data-type="filling" data-value="cream" data-color="#fffacd">
+              <div class="option-icon">🥛</div>
+              <div class="option-label">Cream</div>
+            </div>
+            <div class="option-card" data-type="filling" data-value="chocolate" data-color="#8b4513">
+              <div class="option-icon">🍫</div>
+              <div class="option-label">Chocolate</div>
+            </div>
+            <div class="option-card" data-type="filling" data-value="strawberry" data-color="#ff69b4">
+              <div class="option-icon">🍓</div>
+              <div class="option-label">Strawberry</div>
+            </div>
+            <div class="option-card" data-type="filling" data-value="caramel" data-color="#d2691e">
+              <div class="option-icon">🍮</div>
+              <div class="option-label">Caramel</div>
+            </div>
+            <div class="option-card" data-type="filling" data-value="nutella" data-color="#6b4423">
+              <div class="option-icon">🌰</div>
+              <div class="option-label">Nutella</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toppings Section -->
+        <div class="option-section">
+          <div class="option-header" onclick="toggleSection('toppings')">
+            <span class="option-arrow" id="arrow-toppings">▶</span>
+            Toppings ▼
+          </div>
+          <div class="option-grid" id="toppings-options">
+            <div class="option-card" data-type="topping" data-value="🍒">
+              <div class="option-icon">🍒</div>
+              <div class="option-label">Cherry</div>
+            </div>
+            <div class="option-card" data-type="topping" data-value="🍓">
+              <div class="option-icon">🍓</div>
+              <div class="option-label">Strawberry</div>
+            </div>
+            <div class="option-card" data-type="topping" data-value="🕯️">
+              <div class="option-icon">🕯️</div>
+              <div class="option-label">Candle</div>
+            </div>
+            <div class="option-card" data-type="topping" data-value="⭐">
+              <div class="option-icon">⭐</div>
+              <div class="option-label">Star</div>
+            </div>
+            <div class="option-card" data-type="topping" data-value="🌸">
+              <div class="option-icon">🌸</div>
+              <div class="option-label">Flower</div>
+            </div>
+            <div class="option-card" data-type="topping" data-value="🎂">
+              <div class="option-icon">🎂</div>
+              <div class="option-label">Sparkler</div>
+            </div>
+            <div class="option-card" data-type="topping" data-value="🍇">
+              <div class="option-icon">🍇</div>
+              <div class="option-label">Berries</div>
+            </div>
+            <div class="option-card" data-type="topping" data-value="🎀">
+              <div class="option-icon">🎀</div>
+              <div class="option-label">Ribbon</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flavor Section -->
+        <div class="option-section">
+          <div class="option-header" onclick="toggleSection('flavor')">
+            <span class="option-arrow" id="arrow-flavor">▶</span>
+            Flavor ▼
+          </div>
+          <div class="option-grid" id="flavor-options">
+            <div class="option-card" data-type="flavor" data-value="classic">
+              <div class="option-icon">🎂</div>
+              <div class="option-label">Classic</div>
+            </div>
+            <div class="option-card" data-type="flavor" data-value="mint">
+              <div class="option-icon">🍃</div>
+              <div class="option-label">Mint</div>
+            </div>
+            <div class="option-card" data-type="flavor" data-value="coffee">
+              <div class="option-icon">☕</div>
+              <div class="option-label">Coffee</div>
+            </div>
+            <div class="option-card" data-type="flavor" data-value="coconut">
+              <div class="option-icon">🥥</div>
+              <div class="option-label">Coconut</div>
+            </div>
+            <div class="option-card" data-type="flavor" data-value="almond">
+              <div class="option-icon">🌰</div>
+              <div class="option-label">Almond</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let customCake = {
+      base: { value: 'vanilla', color: '#f5deb3' },
+      filling: null,
+      toppings: [],
+      flavor: null
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      anime({
+        targets: 'body',
+        opacity: [0, 1],
+        duration: 600,
+        easing: 'easeOutQuad'
+      });
+
+      anime({
+        targets: '.cake-preview, .customize-options',
+        opacity: [0, 1],
+        translateY: [30, 0],
+        duration: 800,
+        delay: anime.stagger(200),
+        easing: 'easeOutCubic'
+      });
+
+      renderCake();
+
+      document.querySelectorAll('.option-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const type = card.dataset.type;
+          const value = card.dataset.value;
+          const color = card.dataset.color;
+
+          if (type === 'topping') {
+            card.classList.toggle('selected');
+            
+            if (card.classList.contains('selected')) {
+              if (!customCake.toppings.includes(value)) {
+                customCake.toppings.push(value);
+              }
+            } else {
+              customCake.toppings = customCake.toppings.filter(t => t !== value);
+            }
+          } else {
+            card.parentElement.querySelectorAll('.option-card').forEach(c => {
+              c.classList.remove('selected');
+            });
+            card.classList.add('selected');
+
+            if (type === 'base') {
+              customCake.base = { value, color };
+            } else if (type === 'filling') {
+              customCake.filling = { value, color };
+            } else if (type === 'flavor') {
+              customCake.flavor = value;
+            }
+          }
+
+          renderCake();
+        });
+      });
+
+      document.getElementById('addToCartBtn').addEventListener('click', async () => {
+        const cakeCanvas = document.querySelector('.cake-preview');
+        
+        try {
+          const canvas = await html2canvas(cakeCanvas, {
+            backgroundColor: '#fff6e6',
+            scale: 2,
+            logging: false
+          });
+          
+          const imageDataUrl = canvas.toDataURL('image/png');
+
+          const customProduct = {
+            name: `Custom ${customCake.base.value.charAt(0).toUpperCase() + customCake.base.value.slice(1)} Cake`,
+            price: '₱350',
+            img: imageDataUrl,
+            qty: 1,
+            customization: { ...customCake }
+          };
+
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          cart.push(customProduct);
+          localStorage.setItem('cart', JSON.stringify(cart));
+
+          anime({
+            targets: '.go-button',
+            scale: [1, 1.1, 1],
+            duration: 300,
+            easing: 'easeInOutQuad',
+            complete: () => {
+              alert('Custom cake added to cart!');
+              window.location.href = 'cart.html';
+            }
+          });
+        } catch (error) {
+          console.error('Error capturing cake:', error);
+          alert('Error adding cake to cart. Please try again.');
+        }
+      });
+    });
+
+    function toggleSection(section) {
+      const grid = document.getElementById(`${section}-options`);
+      const arrow = document.getElementById(`arrow-${section}`);
+      
+      grid.classList.toggle('open');
+      arrow.classList.toggle('open');
+
+      if (grid.classList.contains('open')) {
+        anime({
+          targets: `#${section}-options .option-card`,
+          scale: [0.8, 1],
+          opacity: [0, 1],
+          duration: 400,
+          delay: anime.stagger(50),
+          easing: 'easeOutElastic(1, .6)'
+        });
+      }
+    }
+
+    function renderCake() {
+      const display = document.getElementById('cakeDisplay');
+      const baseColor = customCake.base.color;
+      const frostingColor = lightenColor(baseColor, 30);
+      const fillingColor = customCake.filling ? customCake.filling.color : null;
+      const flavorClass = customCake.flavor ? `flavor-${customCake.flavor}` : '';
+
+      const sprinkles = generateSprinkles(15);
+
+      const toppingsHtml = customCake.toppings.length > 0 
+        ? `<div class="cake-topping">${customCake.toppings.map(t => `<span class="topping-item">${t}</span>`).join('')}</div>`
+        : '';
+
+      const flavorEffect = customCake.flavor && customCake.flavor !== 'classic' 
+        ? `<div class="flavor-glow ${flavorClass}"></div><div class="flavor-shine"></div>` 
+        : '';
+
+      display.innerHTML = `
+        <div class="cake-layer cake-layer-1">
+          <div class="layer-body" style="background: ${baseColor};">
+            ${fillingColor ? `<div class="filling-stripe" style="background: ${fillingColor};"></div>` : ''}
+            ${sprinkles}
+            ${flavorEffect}
+          </div>
+          <div class="cake-frosting" style="background: ${frostingColor};"></div>
+          ${toppingsHtml}
+        </div>
+        <div class="cake-layer cake-layer-2">
+          <div class="layer-body" style="background: ${baseColor};">
+            ${fillingColor ? `<div class="filling-stripe" style="background: ${fillingColor};"></div>` : ''}
+            ${flavorEffect}
+          </div>
+          <div class="cake-frosting" style="background: ${frostingColor};"></div>
+        </div>
+        <div class="cake-layer cake-layer-3">
+          <div class="layer-body" style="background: ${baseColor};">
+            ${fillingColor ? `<div class="filling-stripe" style="background: ${fillingColor};"></div>` : ''}
+            ${flavorEffect}
+          </div>
+          <div class="cake-frosting" style="background: ${frostingColor};"></div>
+        </div>
+      `;
+
+      anime({
+        targets: '.cake-layer',
+        scale: [0.9, 1],
+        opacity: [0, 1],
+        duration: 600,
+        delay: anime.stagger(100, {from: 'last'}),
+        easing: 'easeOutElastic(1, .7)'
+      });
+
+      if (customCake.toppings.length > 0) {
+        anime({
+          targets: '.topping-item',
+          scale: [0, 1],
+          rotate: [180, 0],
+          opacity: [0, 1],
+          duration: 800,
+          delay: anime.stagger(100, {start: 500}),
+          easing: 'easeOutElastic(1, .6)'
+        });
+      }
+    }
+
+    function generateSprinkles(count) {
+      let sprinklesHtml = '';
+      const colors = ['#ff69b4', '#ffd700', '#87ceeb', '#98fb98', '#dda0dd'];
+      
+      for (let i = 0; i < count; i++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const left = Math.random() * 90 + 5;
+        const top = Math.random() * 80 + 10;
+        const rotation = Math.random() * 360;
+        const delay = Math.random() * 2;
+        
+        sprinklesHtml += `<div class="sprinkle" style="
+          background: ${color};
+          left: ${left}%;
+          top: ${top}%;
+          transform: rotate(${rotation}deg);
+          animation-delay: ${delay}s;
+        "></div>`;
+      }
+      
+      return sprinklesHtml;
+    }
+
+    function lightenColor(color, percent) {
+      const num = parseInt(color.replace("#",""), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.min(255, (num >> 16) + amt);
+      const G = Math.min(255, (num >> 8 & 0x00FF) + amt);
+      const B = Math.min(255, (num & 0x0000FF) + amt);
+      return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+  </script>
+</body>
+</html>
