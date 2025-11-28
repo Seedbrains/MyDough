@@ -16,12 +16,29 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
   <script src="navbar.js" defer></script>
   <script src="script.js" defer></script>
+<script>  document.addEventListener('DOMContentLoaded', () => {
+  const goBtn = document.getElementById('goBtn');
+  if (goBtn) {
+    goBtn.addEventListener('click', () => {
+      anime({
+        targets: 'body',
+        opacity: [1, 0],
+        duration: 500,
+        easing: 'easeInQuad',
+        complete: () => {
+          window.location.href = 'customize.html';
+        }
+      });
+    });
+  }
+});</script>
+</head>
 </head>
 <body>
 
  <header class="site-header">
   <div class="container header-inner">
-<a href="#home" class="brand">MyDough</a>
+ <a href="#home" class="brand">MyDough</a>
 
     <nav class="main-nav">
       <a href="#home">Home</a>
@@ -103,4 +120,3 @@
 
 </body>
 </html>
-
