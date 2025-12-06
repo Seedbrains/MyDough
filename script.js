@@ -238,3 +238,105 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+  document.addEventListener('DOMContentLoaded', () => {
+      // Page fade in animation
+      anime({
+        targets: 'body',
+        opacity: [0, 1],
+        duration: 600,
+        easing: 'easeOutQuad'
+      });
+
+      // Animate curve
+      anime({
+        targets: '.curve',
+        opacity: [0, 1],
+        translateY: [-50, 0],
+        duration: 1000,
+        easing: 'easeOutCubic'
+      });
+
+      // Animate account sections
+      anime({
+        targets: '.account-sidebar, .account-main',
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 800,
+        delay: anime.stagger(150, {start: 200}),
+        easing: 'easeOutCubic'
+      });
+
+      // Load user data
+      const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+      
+      document.getElementById('username').value = currentUser.username || '';
+      document.getElementById('name').value = currentUser.name || '';
+      document.getElementById('email').value = currentUser.email || '';
+      document.getElementById('phone').value = currentUser.phone || '';
+      document.getElementById('gender').value = currentUser.gender || '';
+      document.getElementById('dob').value = currentUser.dob || '';
+      document.getElementById('sidebarUsername').textContent = currentUser.username || 'USERNAME';
+
+      // Load profile picture if exists
+      if (currentUser.profilePic) {
+        const sidebarPic = document.getElementById('sidebarProfilePic');
+        const previewPic = document.getElementById('profilePicPreview');
+        sidebarPic.innerHTML = `<img src="${currentUser.profilePic}" alt="Profile">`;
+        previewPic.innerHTML = `<img src="${currentUser.profilePic}" alt="Profile">`;
+      }
+
+      // Profile picture upload
+      const uploadBtn = document.getElementById('uploadBtn');
+      const profilePicInput = document.getElementById('profilePicInput');
+
+      uploadBtn.addEventListener('click', () => {
+        profilePicInput.click();
+      });
+
+      profilePicInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const imageUrl = e.target.result;
+            document.getElementById('profilePicPreview').innerHTML = `<img src="${imageUrl}" alt="Profile">`;
+            document.getElementById('sidebarProfilePic').innerHTML = `<img src="${imageUrl}" alt="Profile">`;
+            currentUser.profilePic = imageUrl;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Save profile
+      document.getElementById('profileForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        currentUser.name = document.getElementById('name').value;
+        currentUser.email = document.getElementById('email').value;
+        currentUser.phone = document.getElementById('phone').value;
+        currentUser.gender = document.getElementById('gender').value;
+        currentUser.dob = document.getElementById('dob').value;
+        currentUser.address = currentUser.address || 'Not set';
+
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        // Update users array too
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userIndex = users.findIndex(u => u.username === currentUser.username);
+        if (userIndex !== -1) {
+          users[userIndex] = { ...users[userIndex], ...currentUser };
+          localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        alert('Profile updated successfully!');
+      });
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          localStorage.removeItem('currentUser');
+          window.location.href = 'login.html';
+        }
+      });
+    });
