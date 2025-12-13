@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-      <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MyDough – Checkout</title>
@@ -14,30 +14,125 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
   <script src="navbar.js" defer></script>
 
+  <style>
+    /* Payment Method Box */
+    .payment-method-box {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .payment-title {
+      font-family: 'Amatic SC', cursive;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #8b4513;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .payment-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .payment-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.2rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .payment-option:hover {
+      border-color: #d4a373;
+      background: #fdf8f3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(212, 163, 115, 0.2);
+    }
+
+    .payment-option input[type="radio"] {
+      margin-top: 0.2rem;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #d4a373;
+    }
+
+    .payment-option input[type="radio"]:checked ~ .payment-label {
+      color: #8b4513;
+    }
+
+    .payment-option:has(input[type="radio"]:checked) {
+      border-color: #d4a373;
+      background: #fdf8f3;
+      box-shadow: 0 4px 12px rgba(212, 163, 115, 0.25);
+    }
+
+    .payment-label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      flex: 1;
+    }
+
+    .payment-label strong {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .payment-label small {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      color: #666;
+      font-weight: 300;
+    }
+
+    @media (max-width: 768px) {
+      .payment-method-box {
+        padding: 1.5rem;
+      }
+
+      .payment-title {
+        font-size: 1.5rem;
+      }
+
+      .payment-option {
+        padding: 1rem;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
   <header class="site-header">
     <div class="container header-inner">
-<a href="index.html" class="brand">MyDough</a>
+      <a href="index.html" class="brand">MyDough</a>
 
       <nav class="main-nav">
         <a href="index.html">Home</a>
         <a href="index.html#shop">Shop</a>
         <a href="index.html#about">About</a>
-    <div class="auth-link-wrapper">
-  <a id="authLink" href="login.html">Login</a>
-</div>
+        <div class="auth-link-wrapper">
+          <a id="authLink" href="login.html">Login</a>
+        </div>
 
         <a href="cart.html" class="cart-btn" aria-label="View Cart">View Cart</a>
       </nav>
     </div>
   </header>
 
-
-
   <main class="checkout-section">
-        <img src="assets/curve.png" alt="" class="curve">
+    <img src="assets/curve.png" alt="" class="curve">
     <div class="checkout-container">
       <h1 class="checkout-title">CHECKOUT</h1>
 
@@ -53,6 +148,27 @@
         <!-- Delivery Time -->
         <div class="delivery-info">
           ESTIMATED DELIVERY: 30 MINS TO 1 HOUR
+        </div>
+
+        <!-- Payment Method -->
+        <div class="payment-method-box">
+          <h2 class="payment-title">PAYMENT METHOD</h2>
+          <div class="payment-options">
+            <label class="payment-option">
+              <input type="radio" name="payment" value="online" checked>
+              <span class="payment-label">
+                <strong>Online Payment</strong>
+                <small>Pay securely online via card or e-wallet</small>
+              </span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="cod">
+              <span class="payment-label">
+                <strong>Cash on Delivery</strong>
+                <small>Pay with cash when your order arrives</small>
+              </span>
+            </label>
+          </div>
         </div>
 
         <!-- Cart Items -->
@@ -100,7 +216,7 @@
       });
 
       anime({
-        targets: '.info-box, .delivery-info',
+        targets: '.info-box, .delivery-info, .payment-method-box',
         opacity: [0, 1],
         translateY: [20, 0],
         duration: 800,
@@ -154,12 +270,18 @@
           return;
         }
 
+        // Get selected payment method
+        const selectedPayment = document.querySelector('input[name="payment"]:checked');
+        const paymentMethod = selectedPayment ? selectedPayment.value : 'online';
+        const paymentLabel = paymentMethod === 'online' ? 'Online Payment' : 'Cash on Delivery';
+
         // Create order
         const order = {
           id: Date.now(),
           items: cart,
           date: new Date().toISOString(),
           status: 'To Pay',
+          paymentMethod: paymentLabel,
           total: cart.reduce((sum, item) => {
             const price = parseFloat(item.price.replace(/[₱,]/g, ''));
             return sum + (price * item.qty);
@@ -174,7 +296,11 @@
         // Clear cart
         localStorage.removeItem('cart');
 
-        alert('Order placed successfully!');
+        const message = paymentMethod === 'online' 
+          ? 'Order placed successfully! Redirecting to payment...' 
+          : 'Order placed successfully! Pay cash upon delivery.';
+        
+        alert(message);
         window.location.href = 'purchases.html';
       });
     });
